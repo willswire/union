@@ -79,7 +79,7 @@ To deploy this project using Helm, ensure you have Helm installed and properly c
 
 Contributions to this project are welcome and encouraged! To contribute, please follow the standard fork, branch, commit, and pull request workflow. Ensure that your code adheres to any existing style guides and passes all tests.
 
-This project is licensed under the GNU Affero General Public License v3.0. You're free to use, modify, and distribute this software under the terms of this license. Refer to the [LICENSE](LICENSE) file for detailed information.
+This project is licensed under the MIT License. You're free to use, modify, and distribute this software under the terms of this license. Refer to the [LICENSE](LICENSE) file for detailed information.
 
 ## Acknowledgements
 
