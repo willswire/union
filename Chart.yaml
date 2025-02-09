@@ -2,5 +2,5 @@ apiVersion: v2
 name: union
 description: self-host applications designed for Cloudflare Workers
 type: application
-version: 0.2.0
-appVersion: "1.20241214.0"
+version: 0.3.0
+appVersion: "1.20250204.0"

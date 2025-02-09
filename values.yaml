@@ -1,21 +1,28 @@
 workerd:
+  # Configuration for the workerd container image
   image:
     repository: "ghcr.io/willswire/union/workerd"
     pullPolicy: "Always"
     tag: "1.20250204.0"
+  # Service configuration for workerd
   service:
     type: "ClusterIP"
     port: 8080
+  # Date used for compatibility checking
   compatibilityDate: "2023-02-28"
+  # List of workers to deploy
   workers:
     - name: hello-world
-      image: ghcr.io/willswire/union/hello-world:1.0.0-arm64
+      image: ghcr.io/willswire/union/hello-world:1.0.0
 
 cloudflared:
+  # Whether to enable cloudflared
   enabled: true
+  # Cloudflared container image configuration
   image:
     repository: "cloudflare/cloudflared"
     tag: "2024.12.2"
+  # List of tunnels to create
   tunnels:
     - workerName: "hello-world"
   userTunnel:
