@@ -1,0 +1,18 @@
+build:
+    melange build
+    apko build apko.yaml hello-world:1.0.0 hello-world.tar \
+        --ignore-signatures \
+        --sbom=false \
+        --repository-append packages
+
+publish:
+    docker load < hello-world.tar
+    docker tag hello-world:1.0.0-amd64 ghcr.io/willswire/union/hello-world:1.0.0-amd64
+    docker push ghcr.io/willswire/union/hello-world:1.0.0-amd64
+    docker tag hello-world:1.0.0-arm64 ghcr.io/willswire/union/hello-world:1.0.0-arm64
+    docker push ghcr.io/willswire/union/hello-world:1.0.0-arm64
+    docker manifest create \
+        ghcr.io/willswire/union/hello-world:1.0.0 \
+        --amend ghcr.io/willswire/union/hello-world:1.0.0-amd64 \
+        --amend ghcr.io/willswire/union/hello-world:1.0.0-arm64
+    docker manifest push ghcr.io/willswire/union/hello-world:1.0.0

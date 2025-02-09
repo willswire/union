@@ -1,0 +1,24 @@
+package:
+  name: hello-world
+  version: 1.0.0
+  epoch: 0
+  description: a hello world program written for workerd
+  copyright:
+    - license: MIT
+  target-architecture:
+    - aarch64
+    - x86_64
+
+environment:
+  contents:
+    keyring:
+      - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    repositories:
+      - https://packages.wolfi.dev/os
+    packages:
+      - bash
+      - busybox
+
+pipeline:
+  - name: copy program
+    runs: cp ${{package.srcdir}}/main.js ${{targets.destdir}}/main.js

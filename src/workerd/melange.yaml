@@ -1,6 +1,6 @@
 package:
   name: workerd
-  version: 1.20241214.0
+  version: 1.20250204.0
   epoch: 0
   description: The JavaScript / Wasm runtime that powers Cloudflare Workers
   copyright:

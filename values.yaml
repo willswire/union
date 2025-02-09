@@ -1,19 +1,15 @@
 workerd:
-  replicaCount: 1
   image:
     repository: "ghcr.io/willswire/union/workerd"
     pullPolicy: "Always"
-    tag: "1.20241214.0"
+    tag: "1.20250204.0"
   service:
     type: "ClusterIP"
     port: 8080
-  scriptConfig:
-    # Use ConfigMap or Secret
-    sourceType: "ConfigMap"
-    # Reference to existing ConfigMap/Secret containing the script
-    sourceName: "{{ .Release.Name }}-workerd-script"
-    # Key in the ConfigMap/Secret containing the script
-    sourceKey: "worker.js"
+  compatibilityDate: "2023-02-28"
+  workers:
+    - name: hello-world
+      image: ghcr.io/willswire/union/hello-world:1.0.0-arm64
 
 cloudflared:
   enabled: true
