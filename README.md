@@ -15,32 +15,40 @@ To deploy this project using Helm, ensure you have Helm installed and properly c
    cd union
    ```
 
-2. **Configure Your Worker Script**
+2. **Configure Your Worker**
 
-   The worker script can be configured in two ways:
+   Workers are configured in the `values.yaml` file under the `workerd.workers` section. Each worker requires:
+   - A unique name
+   - A container image containing your worker script as `main.js`
 
-   a. Using the default script in values.yaml:
-
+   Example configuration:
    ```yaml
    workerd:
-     scriptConfig:
-       sourceType: "ConfigMap"
-       sourceName: "my-release-my-worker-script"
-       sourceKey: "worker.js"
+     workers:
+       - name: hello-world
+         image: ghcr.io/willswire/union/hello-world:1.0.0
    ```
 
-   b. Using your own ConfigMap:
+   To create your own worker:
 
-   ```yaml
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-     name: my-worker-script
-   data:
-     worker.js: |
-       addEventListener('fetch', event => {
-         event.respondWith(new Response("Hello from my worker!"));
-       });
+   1. Create a new directory under `src/` for your worker
+   2. Create your worker script as `main.js`
+   3. Use the provided melange and apko configurations as templates:
+      - `melange.yaml`: Builds a package containing your worker script
+      - `apko.yaml`: Creates a minimal container image with your worker script
+   4. Build and publish your worker image using the provided `justfile`:
+      ```bash
+      cd src/your-worker
+      just build
+      just publish
+      ```
+
+   Example worker script:
+   ```javascript
+   // main.js
+   addEventListener('fetch', event => {
+     event.respondWith(new Response("Hello World!"));
+   });
    ```
 
 3. **Install the Helm Chart**
@@ -64,7 +72,7 @@ To deploy this project using Helm, ensure you have Helm installed and properly c
    If Cloudflared is enabled, to retrieve the hostname for accessing your service, use:
 
    ```bash
-   kubectl logs deployment/union-cloudflared -n union | grep "|  https:" -B 2 -A 1
+   kubectl logs deployment/cloudflared -n union | grep "|  https:" -B 2 -A 1
    ```
 
 ## Contribution and License Guidelines
@@ -75,7 +83,9 @@ This project is licensed under the GNU Affero General Public License v3.0. You'r
 
 ## Acknowledgements
 
-Union leverages the power of tools developed by Cloudflare.
+Union leverages the power of tools developed by Cloudflare and the Wolfi Linux project:
 
-- [workerd](https://github.com/cloudflare/workerd): The JavaScript/Wasm runtime powering Cloudflare Workers.
-- [cloudflared](https://github.com/cloudflare/cloudflared): The Cloudflare daemon for secure and accelerated outbound connections.
+- [workerd](https://github.com/cloudflare/workerd): The JavaScript/Wasm runtime powering Cloudflare Workers
+- [cloudflared](https://github.com/cloudflare/cloudflared): The Cloudflare daemon for secure and accelerated outbound connections
+- [melange](https://github.com/chainguard-dev/melange): Package builder for APK packages
+- [apko](https://github.com/chainguard-dev/apko): Container image builder for APK-based images
