@@ -16,6 +16,7 @@ cloudflared:
   image:
     repository: "cloudflare/cloudflared"
     tag: "2024.12.2"
+  workerName: "hello-world"
   userTunnel:
     # Default to quick tunnel
     enabled: false
