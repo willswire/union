@@ -42,8 +42,10 @@ spec:
             - tunnel
             - "--metrics"
             - "0.0.0.0:2000"
+            {{- range .Values.cloudflared.tunnels }}
             - "--url"
-            - "http://workerd-{{ .Values.cloudflared.workerName }}:{{ .Values.workerd.service.port }}"
+            - "http://workerd-{{ .workerName }}:{{ $.Values.workerd.service.port }}"
+            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:

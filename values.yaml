@@ -16,9 +16,10 @@ cloudflared:
   image:
     repository: "cloudflare/cloudflared"
     tag: "2024.12.2"
-  workerName: "hello-world"
+  tunnels:
+    - workerName: "hello-world"
   userTunnel:
-    # Default to quick tunnel
+    # Default to quick tunnel, which only works for one worker
     enabled: false
     # Your Cloudflare account number.
     account: ""

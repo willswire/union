@@ -21,8 +21,10 @@ data:
     no-autoupdate: true
     # Serve the workerd service
     ingress:
-      - hostname: {{.Values.cloudflared.userTunnel.hostname}}
-        service: http://workerd-{{ .Values.cloudflared.workerName }}:{{ .Values.workerd.service.port }}
-      # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
+      {{- range .Values.cloudflared.tunnels }}
+      - hostname: {{ $.Values.cloudflared.userTunnel.hostname }}
+        path: {{ .path | default "/*" }}
+        service: http://workerd-{{ .workerName }}:{{ $.Values.workerd.service.port }}
+      {{- end }}
       - service: http_status:404
 {{- end }}
