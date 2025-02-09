@@ -1,42 +1,57 @@
+{{- /* templates/deployment.yaml */ -}}
+{{- range .Values.workerd.workers }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-workerd
+  name: workerd-{{ .name }}
   labels:
-    app: {{ .Release.Name }}-workerd
+    app: workerd
+    worker: {{ .name }}
 spec:
-  replicas: {{ .Values.workerd.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-workerd
+      app: workerd
+      worker: {{ .name }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-workerd
+        app: workerd
+        worker: {{ .name }}
     spec:
+      initContainers:
+        - name: init-{{ .name }}
+          image: "{{ .image }}"
+          volumeMounts:
+            - name: worker-files
+              mountPath: /app/worker
       containers:
         - name: workerd
-          image: "{{ .Values.workerd.image.repository }}:{{ .Values.workerd.image.tag }}"
+          image: "{{ $.Values.workerd.image.repository }}:{{ $.Values.workerd.image.tag }}"
           ports:
-            - containerPort: {{ .Values.workerd.service.port }}
+            - containerPort: {{ $.Values.workerd.service.port }}
           command:
             - /usr/bin/workerd
           args:
             - "--verbose"
             - "serve"
             - "/app/config.capnp"
-          imagePullPolicy: {{ .Values.workerd.image.pullPolicy }}
+          imagePullPolicy: {{ $.Values.workerd.image.pullPolicy }}
           volumeMounts:
-            - name: workerd-config
+            # Mount the worker-specific ConfigMap to provide /app/config.capnp.
+            - name: config
               mountPath: /app/config.capnp
               subPath: config.capnp
-            - name: workerd-script
-              mountPath: /app/worker.js
-              subPath: worker.js
+            # Mount the shared volume at /app/worker so the embedded file is found.
+            - name: worker-files
+              mountPath: /app/worker
       volumes:
-        - name: workerd-config
+        # Volume for the worker-specific configuration.
+        - name: config
           configMap:
-            name: workerd-config
-        - name: workerd-script
-          configMap:
-            name: workerd-script
+            name: workerd-config-{{ .name }}
+        # Shared volume for copying the worker’s main.js.
+        - name: worker-files
+          emptyDir: {}
+---
+{{- end }}

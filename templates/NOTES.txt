@@ -1,4 +1,15 @@
 {{- if .Values.cloudflared.enabled }}
+Cloudflared tunnel is configured to expose the following workers:
+{{- range .Values.cloudflared.tunnels }}
+  - {{ .workerName }}
+{{- end }}
+
 To see the hostname of the cloudflared tunnel, run:
-  kubectl logs deployment/{{ .Release.Name }}-cloudflared -n {{ .Release.Namespace }} | grep "|  https:" -B 2 -A 1
+  kubectl logs deployment/cloudflared -n {{ .Release.Namespace }} | grep "|  https:" -B 2 -A 1
+
+{{- if .Values.cloudflared.userTunnel.enabled }}
+Your configured tunnel "{{ .Values.cloudflared.userTunnel.tunnelName }}" is being used with hostname: {{ .Values.cloudflared.userTunnel.hostname }}
+{{- else }}
+A quick tunnel has been created and will be available at the URL shown in the logs above.
+{{- end }}
 {{- end }}

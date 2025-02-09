@@ -1,14 +1,20 @@
+{{- /* For each worker, create a service that selects pods labeled with app: workerd and worker: <worker name> */ -}}
+{{- range .Values.workerd.workers }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-workerd
+  name: workerd-{{ .name }}
   labels:
-    app: {{ .Release.Name }}-workerd
+    app: workerd
+    worker: {{ .name }}
 spec:
-  type: {{ .Values.workerd.service.type }}
+  type: {{ $.Values.workerd.service.type }}
   ports:
-    - port: {{ .Values.workerd.service.port }}
-      targetPort: {{ .Values.workerd.service.port }}
+    - port: {{ $.Values.workerd.service.port }}
+      targetPort: {{ $.Values.workerd.service.port }}
       protocol: TCP
   selector:
-    app: {{ .Release.Name }}-workerd
+    app: workerd
+    worker: {{ .name }}
+---
+{{- end }}

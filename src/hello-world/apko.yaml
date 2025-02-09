@@ -1,0 +1,33 @@
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    - hello-world
+    - coreutils
+
+entrypoint:
+  command: "/bin/cp"
+
+cmd: "-v /main.js /app/worker/main.js"
+
+accounts:
+  groups:
+    - groupname: user
+      gid: 10000
+  users:
+    - username: user
+      uid: 10000
+  run-as: user
+
+paths:
+  - path: "/main.js"
+    type: permissions
+    uid: 10000
+    gid: 10000
+    permissions: 0o777
+
+archs:
+  - aarch64
+  - x86_64

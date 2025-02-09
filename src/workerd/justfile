@@ -1,0 +1,18 @@
+build:
+    melange build
+    apko build apko.yaml workerd:1.20250204.0 workerd.tar \
+        --ignore-signatures \
+        --sbom=false \
+        --repository-append packages
+
+publish:
+    docker load < workerd.tar
+    docker tag workerd:1.20250204.0-amd64 ghcr.io/willswire/union/workerd:1.20250204.0-amd64
+    docker push ghcr.io/willswire/union/workerd:1.20250204.0-amd64
+    docker tag workerd:1.20250204.0-arm64 ghcr.io/willswire/union/workerd:1.20250204.0-arm64
+    docker push ghcr.io/willswire/union/workerd:1.20250204.0-arm64
+    docker manifest create \
+        ghcr.io/willswire/union/workerd:1.20250204.0 \
+        --amend ghcr.io/willswire/union/workerd:1.20250204.0-amd64 \
+        --amend ghcr.io/willswire/union/workerd:1.20250204.0-arm64
+    docker manifest push ghcr.io/willswire/union/workerd:1.20250204.0

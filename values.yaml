@@ -1,29 +1,26 @@
 workerd:
-  replicaCount: 1
   image:
     repository: "ghcr.io/willswire/union/workerd"
     pullPolicy: "Always"
-    tag: "1.20241214.0"
+    tag: "1.20250204.0"
   service:
     type: "ClusterIP"
     port: 8080
-  script: |
-    addEventListener('fetch', event => {
-      event.respondWith(handle(event.request));
-    });
-
-    async function handle(request) {
-      return new Response("Hello World!");
-    }
+  compatibilityDate: "2023-02-28"
+  workers:
+    - name: hello-world
+      image: ghcr.io/willswire/union/hello-world:1.0.0-arm64
 
 cloudflared:
   enabled: true
   image:
     repository: "cloudflare/cloudflared"
     tag: "2024.12.2"
+  tunnels:
+    - workerName: "hello-world"
   userTunnel:
-    # Default to quick tunnel
-    enabled: false  
+    # Default to quick tunnel, which only works for one worker
+    enabled: false
     # Your Cloudflare account number.
     account: ""
     # The name of the tunnel this instance will serve

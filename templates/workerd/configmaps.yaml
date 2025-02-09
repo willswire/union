@@ -1,32 +1,26 @@
----
+{{- /* templates/configmap.yaml */ -}}
+{{- range .Values.workerd.workers }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: workerd-config
+  name: workerd-config-{{ .name }}
 data:
   config.capnp: |
     using Workerd = import "/workerd/workerd.capnp";
 
     const default :Workerd.Worker = (
-      serviceWorkerScript = embed "worker.js",
-      compatibilityDate = "2023-02-28",
+      serviceWorkerScript = embed "worker/main.js",
+      compatibilityDate = "{{ $.Values.workerd.compatibilityDate }}",
     );
 
     const config :Workerd.Config = (
-      services = [ (name = "main", worker = .default) ],
+      services = [ (name = "{{ .name }}", worker = .default) ],
       sockets = [
         ( name = "http",
-          address = "*:{{ .Values.workerd.service.port }}",
+          address = "*:{{ $.Values.workerd.service.port }}",
           http = (),
-          service = "main" )
+          service = "{{ .name }}" )
       ]
     );
-
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: workerd-script
-data:
-  worker.js: |
-    {{ .Values.workerd.script | nindent 4 }}
+{{- end }}
