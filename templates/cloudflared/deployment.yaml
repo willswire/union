@@ -3,18 +3,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-cloudflared
+  name: cloudflared
   labels:
-    app: {{ .Release.Name }}-cloudflared
+    app: cloudflared
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-cloudflared
+      app: cloudflared
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-cloudflared
+        app: cloudflared
     spec:
       containers:
         - name: cloudflared
@@ -43,7 +43,7 @@ spec:
             - "--metrics"
             - "0.0.0.0:2000"
             - "--url"
-            - "http://{{ .Release.Name }}-workerd:{{ .Values.workerd.service.port }}"
+            - "http://workerd:{{ .Values.workerd.service.port }}"
           {{- end }}
           livenessProbe:
             httpGet:

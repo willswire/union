@@ -22,7 +22,7 @@ data:
     # Serve the workerd service
     ingress:
       - hostname: {{.Values.cloudflared.userTunnel.hostname}}
-        service: http://{{ .Release.Name }}-workerd:{{ .Values.workerd.service.port }}
+        service: http://workerd:{{ .Values.workerd.service.port }}
       # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
       - service: http_status:404
 {{- end }}
