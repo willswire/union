@@ -13,7 +13,7 @@ workerd:
   # List of workers to deploy
   workers:
     - name: hello-world
-      image: ghcr.io/willswire/union/hello-world:1.0.0
+      image: ghcr.io/willswire/union/hello-world:2.0.0
 
 cloudflared:
   # Whether to enable cloudflared
