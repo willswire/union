@@ -9,7 +9,7 @@ data:
     using Workerd = import "/workerd/workerd.capnp";
 
     const default :Workerd.Worker = (
-      serviceWorkerScript = embed "worker/main.js",
+      serviceWorkerScript = embed "worker/index.js",
       compatibilityDate = "{{ $.Values.workerd.compatibilityDate }}",
     );
 
