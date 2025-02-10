@@ -1,6 +1,6 @@
 package:
   name: hello-world
-  version: 1.0.0
+  version: 2.0.0
   epoch: 0
   description: a hello world program written for workerd
   copyright:
@@ -20,5 +20,5 @@ environment:
       - busybox
 
 pipeline:
-  - name: copy program
-    runs: cp ${{package.srcdir}}/main.js ${{targets.destdir}}/main.js
+  - name: copy bundled worker
+    runs: tar czf ${{targets.destdir}}/build.tar.gz --directory=${{package.srcdir}}/build/ .

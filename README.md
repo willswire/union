@@ -21,20 +21,20 @@ To deploy this project using Helm, ensure you have Helm installed and properly c
    - A unique name
    - A container image containing your worker script as `main.js`
 
-   Example configuration:
+   See `src/hello-world` for an example application. Example configuration:
    ```yaml
    workerd:
      workers:
        - name: hello-world
-         image: ghcr.io/willswire/union/hello-world:1.0.0
+         image: ghcr.io/willswire/union/hello-world:2.0.0
    ```
 
    To create your own worker:
 
    1. Create a new directory under `src/` for your worker
-   2. Create your worker script as `main.js`
+   2. Create your worker with `npx create cloudflare@latest`
    3. Use the provided melange and apko configurations as templates:
-      - `melange.yaml`: Builds a package containing your worker script
+      - `melange.yaml`: Builds a package containing your worker code
       - `apko.yaml`: Creates a minimal container image with your worker script
    4. Build and publish your worker image using the provided `justfile`:
       ```bash
@@ -42,14 +42,6 @@ To deploy this project using Helm, ensure you have Helm installed and properly c
       just build
       just publish
       ```
-
-   Example worker script:
-   ```javascript
-   // main.js
-   addEventListener('fetch', event => {
-     event.respondWith(new Response("Hello World!"));
-   });
-   ```
 
 3. **Install the Helm Chart**
 

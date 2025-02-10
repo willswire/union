@@ -5,12 +5,12 @@ contents:
     - https://packages.wolfi.dev/os
   packages:
     - hello-world
-    - coreutils
+    - busybox
 
 entrypoint:
-  command: "/bin/cp"
+  command: '/bin/tar'
 
-cmd: "-v /main.js /app/worker/main.js"
+cmd: 'xvf /build.tar.gz --directory=/app/worker/'
 
 accounts:
   groups:
@@ -22,7 +22,7 @@ accounts:
   run-as: user
 
 paths:
-  - path: "/main.js"
+  - path: /build.tar.gz
     type: permissions
     uid: 10000
     gid: 10000
