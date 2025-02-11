@@ -10,13 +10,12 @@ workerd:
     port: 8080
   # Date used for compatibility checking
   compatibilityDate: "2023-02-28"
-  # Storage settings
-  storage:
-    size: "1Gi"
   # List of workers to deploy
   workers:
     - name: hello-world
       image: ghcr.io/willswire/union/hello-world:2.0.0
+      durableObjects:
+        enabled: false
 
 cloudflared:
   # Whether to enable cloudflared

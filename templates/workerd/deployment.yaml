@@ -25,8 +25,10 @@ spec:
           volumeMounts:
             - name: worker-files
               mountPath: /app/worker
+            {{- if .durableObjects.enabled }}
             - name: worker-data
               mountPath: /app/worker/data
+            {{- end }}
       containers:
         - name: workerd
           image: "{{ $.Values.workerd.image.repository }}:{{ $.Values.workerd.image.tag }}"
@@ -47,8 +49,10 @@ spec:
             # Mount the shared volume at /app/worker so the embedded file is found.
             - name: worker-files
               mountPath: /app/worker
+            {{- if .durableObjects.enabled }}
             - name: worker-data
               mountPath: /app/worker/data
+            {{- end }}
       volumes:
         # Volume for the worker-specific configuration.
         - name: config
@@ -57,11 +61,14 @@ spec:
         # Shared volume for copying the worker's main.js.
         - name: worker-files
           emptyDir: {}
+        {{- if .durableObjects.enabled }}
         # Persistent volume for worker data
         - name: worker-data
           persistentVolumeClaim:
             claimName: workerd-data-{{ .name }}
+        {{- end }}
 ---
+{{- if .durableObjects.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -74,6 +81,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ $.Values.workerd.storage.size }}
+      storage: {{ .durableObjects.storageSize }}
 ---
+{{- end }}
 {{- end }}
