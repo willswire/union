@@ -13,10 +13,14 @@ data:
         (name = "{{ .name }}", esModule = embed "worker/index.js"),
       ],
       compatibilityDate = "{{ $.Values.workerd.compatibilityDate }}",
+      durableObjectStorage = (localDisk = "data")
     );
 
     const config :Workerd.Config = (
-      services = [ (name = "{{ .name }}", worker = .default) ],
+      services = [
+        (name = "{{ .name }}", worker = .default),
+        (name = "data", disk = (path = "/app/worker/data", writable = true))
+      ],
       sockets = [
         ( name = "http",
           address = "*:{{ $.Values.workerd.service.port }}",
