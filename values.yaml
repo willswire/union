@@ -14,6 +14,8 @@ workerd:
   workers:
     - name: hello-world
       image: ghcr.io/willswire/union/hello-world:2.0.0
+      durableObjects:
+        enabled: false
 
 cloudflared:
   # Whether to enable cloudflared

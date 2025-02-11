@@ -7,22 +7,40 @@ metadata:
 data:
   config.capnp: |
     using Workerd = import "/workerd/workerd.capnp";
-
-    const default :Workerd.Worker = (
-      modules = [
-        (name = "{{ .name }}", esModule = embed "worker/index.js"),
-      ],
-      compatibilityDate = "{{ $.Values.workerd.compatibilityDate }}",
-    );
-
+    
     const config :Workerd.Config = (
-      services = [ (name = "{{ .name }}", worker = .default) ],
+      services = [
+        (name = "{{ .name }}", worker = .default),
+        {{- if .durableObjects.enabled }}
+        (name = "data", disk = (path = "/app/worker/data", writable = true))
+        {{- end }}
+      ],
       sockets = [
         ( name = "http",
           address = "*:{{ $.Values.workerd.service.port }}",
           http = (),
           service = "{{ .name }}" )
       ]
+    );
+
+    const default :Workerd.Worker = (
+      compatibilityDate = "{{ $.Values.workerd.compatibilityDate }}",
+      modules = [
+        (name = "{{ .name }}", esModule = embed "worker/index.js"),
+      ]
+      {{- if .durableObjects.enabled }},
+      durableObjectNamespaces = [
+        {{- range .durableObjects.namespaces }}
+        (className = "{{ .className }}", uniqueKey = "{{ .uniqueKey }}"),
+        {{- end }}
+      ],
+      durableObjectStorage = (localDisk = "data"),
+      bindings = [
+        {{- range .durableObjects.namespaces }}
+        (name = "{{ .name }}", durableObjectNamespace = "{{ .className }}"),
+        {{- end }}
+      ],
+      {{- end }}
     );
 ---
 {{- end }}
